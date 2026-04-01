@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniCura Consultation</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.png">
+  <style>
+    :root {
+      --bg: #071b1c;
+      --panel: #0f3234;
+      --panel-soft: #163f42;
+      --accent: #3fbcc0;
+      --text: #eef8f8;
+      --muted: #a6c8c9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #0d2729 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1.4fr 0.8fr;
+    }
+    .panel {
+      background: rgba(15, 50, 52, 0.95);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 20px;
+    }
+    h1, h2 { margin-top: 0; }
+    .muted { color: var(--muted); }
+    #jitsiFrame {
+      width: 100%;
+      height: 72vh;
+      border: 0;
+      border-radius: 16px;
+      background: #081415;
+    }
+    .messages {
+      height: 52vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .message {
+      background: var(--panel-soft);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    .message strong { display: block; margin-bottom: 4px; }
+    .composer {
+      display: grid;
+      gap: 10px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: #082325;
+      color: var(--text);
+      padding: 14px;
+      resize: vertical;
+    }
+    button, .link-btn {
+      border: 0;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #042527;
+      font-weight: 700;
+      padding: 11px 18px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    @media (max-width: 980px) {
+      .wrap { grid-template-columns: 1fr; }
+      #jitsiFrame { height: 50vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel">
+      <h1>UniCura Video Consultation</h1>
+      <p class="muted" id="roomLabel">Preparing consultation room...</p>
+      <iframe id="jitsiFrame" allow="camera; microphone; fullscreen; display-capture"></iframe>
+    </section>
+
+    <aside class="panel">
+      <h2>Live Chat</h2>
+      <p class="muted" id="chatInfo">Connecting to chat...</p>
+      <div id="messages" class="messages"></div>
+      <div class="composer">
+        <textarea id="messageInput" placeholder="Type your message for the consultation..."></textarea>
+        <button id="sendButton" type="button">Send Message</button>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      const appointmentId = params.get('appointmentId');
+      const role = params.get('role') || 'patient';
+      const senderName = params.get('name') || 'UniCura User';
+      const roomName = `unicura-${appointmentId || 'consultation-room'}`;
+      const roomLabel = document.getElementById('roomLabel');
+      const chatInfo = document.getElementById('chatInfo');
+      const messagesEl = document.getElementById('messages');
+      const messageInput = document.getElementById('messageInput');
+      const sendButton = document.getElementById('sendButton');
+      const jitsiFrame = document.getElementById('jitsiFrame');
+
+      roomLabel.textContent = `Room: ${roomName}`;
+      chatInfo.textContent = `Signed in as ${senderName} (${role})`;
+      jitsiFrame.src = `https://meet.jit.si/${encodeURIComponent(roomName)}#config.prejoinPageEnabled=false`;
+
+      async function loadMessages() {
+        if (!appointmentId) {
+          messagesEl.innerHTML = '<div class="message"><strong>System</strong>Missing appointment ID.</div>';
+          return;
+        }
+
+        const response = await fetch(`/api/chat/messages?appointmentId=${encodeURIComponent(appointmentId)}`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || 'Unable to load messages.');
+        }
+
+        messagesEl.innerHTML = data.messages.length
+          ? data.messages.map((item) => `
+              <div class="message">
+                <strong>${item.senderName} (${item.senderRole})</strong>
+                <div>${item.message}</div>
+              </div>
+            `).join('')
+          : '<div class="message"><strong>System</strong>No messages yet. Start the conversation here.</div>';
+
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      sendButton.addEventListener('click', async function() {
+        const message = messageInput.value.trim();
+        if (!appointmentId || !message) {
+          return;
+        }
+
+        const response = await fetch('/api/chat/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            appointmentId,
+            senderName,
+            senderRole: role,
+            message
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          alert(data.message || 'Unable to send message.');
+          return;
+        }
+
+        messageInput.value = '';
+        await loadMessages();
+      });
+
+      loadMessages().catch((error) => {
+        messagesEl.innerHTML = `<div class="message"><strong>System</strong>${error.message}</div>`;
+      });
+      setInterval(() => {
+        loadMessages().catch(() => {});
+      }, 5000);
+    });
+  </script>
+<script src="/js/site-api.js" defer></script>
+</body>
+</html>

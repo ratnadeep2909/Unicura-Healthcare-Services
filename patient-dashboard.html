@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniCura Patient Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.png">
+  <style>
+    :root {
+      --bg: #071c1d;
+      --panel: #0f2f31;
+      --panel-soft: #173f41;
+      --accent: #3fbcc0;
+      --text: #ecf8f8;
+      --muted: #a8caca;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #123f43 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 18px;
+      background: var(--accent);
+      color: #032224;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hero,
+    .card {
+      background: rgba(15, 47, 49, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+    }
+
+    .hero {
+      margin-bottom: 24px;
+    }
+
+    .hero h1,
+    .card h2 {
+      margin-top: 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .appointment {
+      background: var(--panel-soft);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .appointment p {
+      margin: 8px 0;
+    }
+
+    .empty {
+      padding: 24px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">UniCura Portal</div>
+      <div class="actions">
+        <a class="btn secondary" href="/index.html">Home</a>
+        <a class="btn" href="/Html-Files/appointment.html">Book Appointment</a>
+        <button class="btn secondary" id="logoutButton" type="button">Log Out</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1 id="welcomeTitle">Welcome</h1>
+      <p class="muted" id="patientInfo">Loading your account...</p>
+    </section>
+
+    <section class="card">
+      <h2>Your Appointments</h2>
+      <div id="appointmentsContainer" class="grid"></div>
+    </section>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const storedUser = localStorage.getItem('unicuraUser');
+      const welcomeTitle = document.getElementById('welcomeTitle');
+      const patientInfo = document.getElementById('patientInfo');
+      const appointmentsContainer = document.getElementById('appointmentsContainer');
+      const logoutButton = document.getElementById('logoutButton');
+
+      if (!storedUser) {
+        window.location.href = '/portal.html';
+        return;
+      }
+
+      const user = JSON.parse(storedUser);
+      welcomeTitle.textContent = `Welcome, ${user.name}`;
+      patientInfo.textContent = `Email: ${user.email}`;
+
+      logoutButton.addEventListener('click', function() {
+        localStorage.removeItem('unicuraAuth');
+        localStorage.removeItem('unicuraUser');
+        window.location.href = '/portal.html';
+      });
+
+      try {
+        const response = await fetch(`/api/appointments?email=${encodeURIComponent(user.email)}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Unable to load appointments.');
+        }
+
+        if (!data.appointments.length) {
+          appointmentsContainer.innerHTML = '<div class="empty">No appointments found for this account yet.</div>';
+          return;
+        }
+
+        appointmentsContainer.innerHTML = data.appointments.map((appointment) => `
+          <article class="appointment">
+            <p><strong>Name:</strong> ${appointment.fullName}</p>
+            <p><strong>Doctor:</strong> ${appointment.doctor}</p>
+            <p><strong>Date:</strong> ${appointment.appointmentDate}</p>
+            <p><strong>Time:</strong> ${appointment.timeSlot}</p>
+            <p><strong>Phone:</strong> ${appointment.phone}</p>
+            <p><strong>Reason:</strong> ${appointment.reason}</p>
+            ${appointment.consultationLink ? `<p><a class="btn" href="${appointment.consultationLink}" target="_blank" rel="noopener noreferrer">Join Video Consultation</a></p>` : ''}
+            ${appointment.id ? `<p><a class="btn secondary" href="/consultation.html?appointmentId=${encodeURIComponent(appointment.id)}&role=patient&name=${encodeURIComponent(user.name)}">Open Chat Room</a></p>` : ''}
+          </article>
+        `).join('');
+      } catch (error) {
+        appointmentsContainer.innerHTML = `<div class="empty">${error.message}</div>`;
+      }
+    });
+  </script>
+<script src="/js/site-api.js" defer></script>
+</body>
+</html>

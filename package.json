@@ -1,0 +1,18 @@
+{
+  "name": "unicura",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UniCura static site with a lightweight Node backend",
+  "dependencies": {
+    "mongodb": "^6.18.0",
+    "nodemailer": "^6.10.1"
+  },
+  "scripts": {
+    "migrate:appointments-readable": "node scripts/decrypt-appointments.js",
+    "migrate:forms-readable": "node scripts/decrypt-forms.js",
+    "migrate:users-readable": "node scripts/decrypt-users.js",
+    "seed:doctors": "node scripts/seed-doctors.js",
+    "migrate:json-to-mongo": "node scripts/migrate-json-to-mongo.js",
+    "start": "node server.js"
+  }
+}

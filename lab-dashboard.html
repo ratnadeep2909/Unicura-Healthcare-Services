@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniCura Lab Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.png">
+  <style>
+    :root {
+      --bg: #081611;
+      --panel: rgba(11, 39, 31, 0.96);
+      --panel-soft: #134939;
+      --accent: #74e0b8;
+      --text: #eefaf5;
+      --muted: #c1dfd4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #164438 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px 44px;
+    }
+    .topbar, .hero, .card {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand { font-size: 28px; font-weight: 700; }
+    .muted { color: var(--muted); }
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: var(--accent);
+      color: #073125;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .btn.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .meta-item {
+      background: var(--panel-soft);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 13px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.18);
+      color: var(--text);
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .checkbox-row input {
+      width: auto;
+    }
+    #updateMessage {
+      min-height: 22px;
+      margin-top: 12px;
+      color: #c8f7e3;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">UniCura Lab Dashboard</div>
+      <div>
+        <a class="btn secondary" href="/index.html">Home</a>
+        <button class="btn secondary" id="logoutButton" type="button">Log Out</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1 id="labTitle">Welcome</h1>
+      <p class="muted" id="labMeta">Loading lab profile...</p>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <strong>Phone</strong>
+          <p id="labPhoneText" class="muted"></p>
+        </div>
+        <div class="meta-item">
+          <strong>Open Hours</strong>
+          <p id="labHoursText" class="muted"></p>
+        </div>
+        <div class="meta-item">
+          <strong>Home Collection</strong>
+          <p id="labHomeCollectionText" class="muted"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Update Lab Details</h2>
+      <p class="muted">Manage your visible details so patients see the latest timing and tests available.</p>
+      <form id="labForm">
+        <div class="form-grid">
+          <input id="labPhoneInput" type="text" placeholder="Phone number" required>
+          <input id="labHoursInput" type="text" placeholder="Open hours" required>
+        </div>
+        <div style="margin-top: 14px;">
+          <textarea id="labTestsInput" placeholder="Enter comma-separated tests like Blood Test, Urine Test, CBC" required></textarea>
+        </div>
+        <label class="checkbox-row">
+          <input id="labHomeCollectionInput" type="checkbox">
+          <span>Home collection available</span>
+        </label>
+        <button class="btn" type="submit">Update Lab Details</button>
+      </form>
+      <div id="updateMessage"></div>
+    </section>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      const storedLab = localStorage.getItem("unicuraLab");
+      const labTitle = document.getElementById("labTitle");
+      const labMeta = document.getElementById("labMeta");
+      const logoutButton = document.getElementById("logoutButton");
+      const labForm = document.getElementById("labForm");
+      const updateMessage = document.getElementById("updateMessage");
+
+      if (!storedLab) {
+        window.location.href = "/lab-login.html";
+        return;
+      }
+
+      let lab = JSON.parse(storedLab);
+
+      logoutButton.addEventListener("click", function() {
+        localStorage.removeItem("unicuraLabAuth");
+        localStorage.removeItem("unicuraLab");
+        window.location.href = "/lab-login.html";
+      });
+
+      function renderLab(currentLab) {
+        labTitle.textContent = `Welcome, ${currentLab.name}`;
+        labMeta.textContent = `${currentLab.address}, ${currentLab.city} | ${currentLab.email}`;
+        document.getElementById("labPhoneText").textContent = currentLab.phone || "";
+        document.getElementById("labHoursText").textContent = currentLab.openHours || "";
+        document.getElementById("labHomeCollectionText").textContent = currentLab.homeCollection ? "Available" : "Not available";
+        document.getElementById("labPhoneInput").value = currentLab.phone || "";
+        document.getElementById("labHoursInput").value = currentLab.openHours || "";
+        document.getElementById("labTestsInput").value = (currentLab.testsAvailable || []).join(", ");
+        document.getElementById("labHomeCollectionInput").checked = Boolean(currentLab.homeCollection);
+      }
+
+      async function loadLab() {
+        const response = await fetch(`/api/test-labs/dashboard?email=${encodeURIComponent(lab.email)}`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Unable to load lab profile.");
+        }
+
+        lab = data.lab;
+        localStorage.setItem("unicuraLab", JSON.stringify(lab));
+        renderLab(lab);
+      }
+
+      labForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        updateMessage.textContent = "";
+
+        try {
+          const response = await fetch("/api/test-labs/update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              labId: lab.id,
+              phone: document.getElementById("labPhoneInput").value.trim(),
+              openHours: document.getElementById("labHoursInput").value.trim(),
+              testsAvailable: document.getElementById("labTestsInput").value,
+              homeCollection: document.getElementById("labHomeCollectionInput").checked
+            })
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.message || "Unable to update lab details.");
+          }
+
+          lab = data.lab;
+          localStorage.setItem("unicuraLab", JSON.stringify(lab));
+          renderLab(lab);
+          updateMessage.textContent = data.message || "Lab details updated successfully.";
+        } catch (error) {
+          updateMessage.textContent = error.message;
+        }
+      });
+
+      try {
+        await loadLab();
+      } catch (error) {
+        updateMessage.textContent = error.message;
+      }
+    });
+  </script>
+<script src="/js/site-api.js" defer></script>
+</body>
+</html>

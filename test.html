@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Test </title>
+    <link rel="stylesheet" href="test.css">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Red+Rose:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="bootstraptest.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 8px;
+            background-color: #3fbcc0;
+            z-index: 9999;
+
+        }
+
+        .nearest-labs-panel {
+            max-width: 1200px;
+            margin: 40px auto 20px;
+            padding: 0 20px;
+        }
+
+        .nearest-labs-card {
+            background: linear-gradient(135deg, rgba(10, 43, 61, 0.96), rgba(27, 83, 109, 0.96));
+            border-radius: 24px;
+            padding: 28px;
+            color: #eefbff;
+            box-shadow: 0 20px 38px rgba(0, 0, 0, 0.18);
+        }
+
+        .nearest-labs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .nearest-lab-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 18px;
+        }
+
+        .lab-booking-panel {
+            max-width: 1200px;
+            margin: 20px auto 30px;
+            padding: 0 20px;
+        }
+
+        .lab-booking-card {
+            background: rgba(8, 34, 42, 0.96);
+            border-radius: 24px;
+            padding: 28px;
+            color: #eefbff;
+            box-shadow: 0 20px 38px rgba(0, 0, 0, 0.18);
+        }
+
+        .lab-booking-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 18px;
+        }
+
+        .lab-booking-card input,
+        .lab-booking-card textarea,
+        .lab-booking-card select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.08);
+            color: #eefbff;
+            margin-bottom: 12px;
+        }
+
+        .lab-booking-card textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .lab-tracker-list {
+            display: grid;
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .lab-tracker-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        @media (max-width: 920px) {
+            .lab-booking-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="progressBar"></div>
+    <script>
+        window.onscroll = function () {
+            var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            var scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        };
+    </script>
+    <!-- ############# Header ############# -->
+    <header class="header_container nav-h">
+        <div class="img">
+            <img id="rd-logo" style="width: 81px;
+            height: auto;
+            margin: 13px;
+            margin-bottom: 13px;
+            margin-top: -17px;" 
+            src="/assets/img/rd1.png" />
+            <p>UniCura</p>
+        </div>
+        <nav class="nav_menu">
+
+            <ul class="nav_link">
+                <div class="hamburger" onclick="toggleMenu()">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                  </div>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="Html-Files/news.html">News</a></li>
+              <li><a href="Html-Files/news.html">Service</a></li>
+              <li><a href="login.html">Sign in/Sign-up</a></li>
+              <li><a href="#patient-portal">patient Portal</a></li>
+              <li><a href="#doctors">Doctor</a></li>
+              <li><a href="Html-Files/contact.html">Contact us</a></li>
+              <a href="Html-Files/Doctor Experience.html"><button class="btn1">Find a Doctor</button></a>
+    
+            </ul>
+          </nav>
+         </header>
+
+    <script>
+        window.onscroll = function () {
+            var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            var scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        };
+
+        const hamburger = document.querySelector('.hamburger');
+        const nav = document.querySelector('.nav_link');
+        hamburger.addEventListener('click', () => {
+            nav.classList.toggle('active');
+        });
+    </script>
+
+    <div class="top-search">
+        <div class="search">
+            <!-- <h2>Search and Filter Options</h2>-->
+            <input type="text" id="search-bar">
+            <i class="fa-solid fa-magnifying-glass" onclick="filterTests()"></i>
+            <!--<button onclick="filterTests()">Search</button>-->
+        </div>
+        <div class="img-h1">
+            <h1 class="hero-heading" style="padding-top:100px;">
+                Book Your <span class="highlight">Blood Test</span>
+            </h1>
+            <img class="sec-img" src="images/rd.png" alt="Logo" />
+            <div class="container-fluid container-service py-5">
+                <div class="container pt-5">
+                    <div class="text-center mx-auto content-wrapper">
+                        <h1 class="display-6 mb-3">Reliable & High-Quality Laboratory Service</h1>
+                        <p class="mb-5">Trust our state-of-the-art facilities and expert staff to deliver accurate results and exceptional care for all your testing needs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item">
+                    <div class="icon-box-primary mb-4">
+                        <i class="bi bi-heart-pulse text-dark"></i>
+                    </div>
+                    <h5 class="mb-3">Pathology Testing</h4>
+                        <p class="mb-4">Experience comprehensive analysis and precise diagnosis through our expert laboratory examinations of your bodily samples.</p>
+                    <a class="btn btn-light px-3" href="">Book Now<i class="bi bi-chevron-double-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="service-item">
+                    <div class="icon-box-primary mb-4">
+                        <i class="bi bi-lungs text-dark"></i>
+                    </div>
+                    <h5 class="mb-3">Microbiology Tests</h4>
+                        <p class="mb-4">Discover how we can help identify infections and guide your treatment with our advanced microbiological investigations.</p>
+                    <a class="btn btn-light px-3" href="">Book Now<i class="bi bi-chevron-double-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="service-item">
+                    <div class="icon-box-primary mb-4">
+                        <i class="bi bi-virus text-dark"></i>
+                    </div>
+                    <h5 class="mb-3">Biochemistry Tests</h4>
+                        <p class="mb-4">Gain valuable health insights with our detailed assessment of your body's biochemical processes and compounds.</p>
+                    <a class="btn btn-light px-3" href="">Book Now<i class="bi bi-chevron-double-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
+                <div class="service-item">
+                    <div class="icon-box-primary mb-4">
+                        <i class="bi bi-capsule-pill text-dark"></i>
+                    </div>
+                    <h5 class="mb-3">Histopatology Tests</h4>
+                        <p class="mb-4">Trust our microscopic tissue examinations to provide accurate information about the manifestations of diseases.</p>
+                    <a class="btn btn-light px-3" href="">Book Now<i class="bi bi-chevron-double-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item">
+                    <div class="icon-box-primary mb-4">
+                        <i class="bi bi-capsule text-dark"></i>
+                    </div>
+                    <h5 class="mb-3">Urine Tests</h4>
+                        <p class="mb-4">Detect and manage various medical conditions with our thorough urine analysis services.
+                      </p>
+                    <a class="btn btn-light px-3" href="">Book Now<i class="bi bi-chevron-double-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="service-item">
+                    <div class="icon-box-primary mb-4">
+                        <i class="bi bi-prescription2 text-dark"></i>
+                    </div>
+                    <h5 class="mb-3">Blood Tests</h4>
+                        <p class="mb-4">Ensure your overall health and receive accurate diagnoses with our vital blood examination services.</p>
+                    <a class="btn btn-light px-3" href="">Book Now<i class="bi bi-chevron-double-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="service-item">
+                    <div class="icon-box-primary mb-4">
+                        <i class="bi bi-clipboard2-pulse text-dark"></i>
+                    </div>
+                    <h5 class="mb-3">Fever Tests</h4>
+                        <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tellus augue.</p>
+                    <a class="btn btn-light px-3" href="">Book Now<i class="bi bi-chevron-double-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
+                <div class="service-item">
+                    <div class="icon-box-primary mb-4">
+                        <i class="bi bi-file-medical text-dark"></i>
+                    </div>
+                    <h5 class="mb-3">Allergy Tests</h4>
+                        <p class="mb-4">Identify and manage your allergies with our reliable and comprehensive testing services, tailored to your specific needs.</p>
+                    <a class="btn btn-light px-3" href="">Book Now<i class="bi bi-chevron-double-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <section class="nearest-labs-panel">
+        <div class="nearest-labs-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <div>
+                    <h2 style="margin-top: 0;">Nearest Test Labs</h2>
+                    <p style="margin-bottom: 0;">Allow location access to see the nearest labs for blood tests and diagnostics around you.</p>
+                </div>
+                <button id="findLabsButton" type="button" style="background: #3fbcc0; color: #052530; border: none; border-radius: 999px; padding: 12px 18px; font-weight: 700; cursor: pointer;">Find Nearby Labs</button>
+            </div>
+            <div id="nearestLabsResults" class="nearest-labs-grid">
+                <div class="nearest-lab-item">Click the button above to load nearby test labs.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="lab-booking-panel">
+        <div class="lab-booking-card">
+            <h2 style="margin-top: 0;">Book a Lab Test</h2>
+            <p>Choose a nearby lab, fill your details, and submit your blood or diagnostic test request.</p>
+            <p>Selected lab: <strong id="selectedLabName">No lab selected</strong></p>
+            <form id="labBookingForm">
+                <input type="hidden" id="selectedLabId">
+                <div class="lab-booking-grid">
+                    <div>
+                        <input type="text" id="labBookingName" placeholder="Full Name" required>
+                        <input type="tel" id="labBookingMobile" placeholder="Mobile Number" required>
+                        <input type="email" id="labBookingEmail" placeholder="Email Address">
+                        <input type="text" id="labBookingAddress" placeholder="Address" required>
+                        <input type="text" id="labBookingCity" placeholder="City" required>
+                    </div>
+                    <div>
+                        <input type="date" id="labBookingDate" required>
+                        <select id="labBookingTestType" required>
+                            <option value="">Select Test Type</option>
+                            <option value="Blood Test">Blood Test</option>
+                            <option value="CBC">CBC</option>
+                            <option value="Urine Test">Urine Test</option>
+                            <option value="Thyroid Panel">Thyroid Panel</option>
+                            <option value="Allergy Test">Allergy Test</option>
+                            <option value="Liver Function Test">Liver Function Test</option>
+                            <option value="Diabetes Profile">Diabetes Profile</option>
+                        </select>
+                        <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <input type="checkbox" id="labBookingHomeCollection" style="width: auto; margin-bottom: 0;">
+                            <span>Need home sample collection</span>
+                        </label>
+                        <textarea id="labBookingNotes" placeholder="Additional instructions or symptoms"></textarea>
+                    </div>
+                </div>
+                <button id="labBookingSubmit" type="submit" style="background: #3fbcc0; color: #052530; border: none; border-radius: 999px; padding: 12px 18px; font-weight: 700; cursor: pointer;">Book Lab Test</button>
+            </form>
+
+            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.12);">
+                <h3>Track Lab Booking</h3>
+                <form id="trackLabBookingForm">
+                    <input type="tel" id="trackLabBookingMobile" placeholder="Enter mobile number used for booking" required>
+                    <button type="submit" style="background: transparent; color: #eefbff; border: 1px solid rgba(255,255,255,0.2); border-radius: 999px; padding: 12px 18px; font-weight: 700; cursor: pointer;">Check Booking Status</button>
+                </form>
+                <div id="labBookingTracker" class="lab-tracker-list">
+                    <div class="lab-tracker-item">Your recent lab bookings will appear here.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ############### Footer ############### -->
+    <br /><br /><br /><br /><br /><br />
+    <footer>
+        <div class="footer-wrapper">
+            <div class="footer-columns">
+                <div class="other-columns">
+                    <section>
+                              <section>
+            <h4>Quick Links</h4><br>
+            <ul class="links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="#about">About Us</a></li>
+              <li><a href="index.html#contact">Contact Us</a></li>
+              <li><a href="dex.html">Services</a></li>
+              <li><a href="#doctors">Doctors</a></li>
+              <li><a href="./faq.html">FAQ</a></li>
+            </ul>
+          </section>
+          <section>
+            <h4>Explore</h4><br>
+            <ul class="links">
+              <li><a href="Html-Files/appointment.html">Appointment</a></li>
+              <li><a href="portal.html">Patient Portal</a></li>
+              <li><a href="log/login.html">Login account</a></li>
+              <li><a href="helpline.html">Helplines</a></li>
+              <li><a href="index.html#contact">Location</a></li>
+            </ul>
+          </section>
+          <section>
+            <h4>Legal</h4><br>
+            <ul class="links">
+              <li><a href="Html-Files/customer_agreement.html">Customer Agreement</a></li>
+              <li><a href="Html-Files/privacy_policy_page.html">Privacy Policy</a></li>
+              <li><a href="Html-Files/terms_and_conditions.html">Terms and Conditions</a></li>
+              <li><a href="#">GDPR</a></li>
+            </ul>
+          </section>
+                    <section class="footer-col">
+                        <h4>UNICURA Newsletter</h4>
+                        <br />
+                        <p>
+                            Subscribe to our newsletter for a weekly dose of news, updates,
+                            helpful tips, and exclusive offers.
+                        </p>
+                        <form action="#" class="subscribe-form">
+                            <input type="email" placeholder="Your email" required />
+                            <button type="submit" style="color: black;">SUBSCRIBE</button>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-wrapper">
+                <small>Â© <span id="year"></span><span> UniCura</span>&nbsp;| All Rights
+                    Reserved Made with â¤ï¸ by UniCura!</small>
+                <style>
+                    .social-wrapper a div i {
+                        color: #afb6c7;
+                    }
+
+                    .social-wrapper a div i:hover {
+                        color: #fff;
+                    }
+                </style>
+                <div class="social-wrapper">
+                    <div class="social-links">
+                        <div style="margin-left: 100px; font-family: sans-serif">
+                            <i>Follow&nbsp;Us&nbsp;:&nbsp;</i>
+                        </div>
+                        <a href="https://www.facebook.com/" target="_blank">
+                            <div><i class="fa-brands fa-facebook-f"></i></div>
+                        </a>
+                        <!-- <a href="https://www.twitter.com" target="_blank"><div><i class="fa-brands fa-twitter"></i></div></a> -->
+                        <a href="https://www.twitter.com">
+                            <div>
+                                <img src="twitter.png" style="width: 16px; height: 15px" />
+                            </div>
+                        </a>
+                        <a href="https://www.linkedin.com" target="_blank">
+                            <div><i class="fa-brands fa-linkedin"></i></div>
+                        </a>
+                        <a href="#" target="_blank">
+                            <div><i class="fa-brands fa-instagram"></i></div>
+                        </a>
+                        <a href="https://github.com" target="_blank">
+                            <div><i class="fa-brands fa-github"></i></div>
+                        </a>
+                        <a href="+91 1234567890" title="+91 1234567890" target="_blank">
+                            <div><i class="fa-solid fa-phone"></i></div>
+                        </a>
+                        <a href="info@unicura.com" target="_blank">
+                            <div><i class="fa-solid fa-envelope"></i></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        //// JavaScript working of scroll button when scrolling down
+        var backToTopBtn = document.getElementById("back-to-top");
+
+        if (backToTopBtn) {
+            backToTopBtn.addEventListener("click", function () {
+                document.body.scrollTop = 0; // For Safari
+                document.documentElement.scrollTop = 0; // For Chrome, Firefox, edge
+            });
+        }
+
+        // JavaScript to show scroll button when scrolling down
+        window.addEventListener("scroll", function () {
+            var scrollBtn = document.getElementById("back-to-top");
+            if (scrollBtn) {
+                if (
+                    document.body.scrollTop > 20 ||
+                    document.documentElement.scrollTop > 20
+                ) {
+                    scrollBtn.style.display = "block";
+                } else {
+                    scrollBtn.style.display = "none";
+                }
+            }
+        });
+    </script>
+
+    <script src="tests.js"></script>
+    <script src="test-labs.js"></script>
+<script src="/js/site-api.js" defer></script>
+</body>
+
+</html>

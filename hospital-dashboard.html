@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniCura Hospital Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.png">
+  <style>
+    :root {
+      --bg: #07151c;
+      --panel: rgba(11, 35, 47, 0.96);
+      --panel-soft: #12394b;
+      --accent: #7fd8ff;
+      --text: #eef9fb;
+      --muted: #b7d3dc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #143b54 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px 44px;
+    }
+    .topbar, .hero, .card, .stats-grid .stat {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand { font-size: 28px; font-weight: 700; }
+    .muted { color: var(--muted); }
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: var(--accent);
+      color: #032633;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .btn.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .stat {
+      margin-bottom: 0;
+      text-align: center;
+    }
+    .stat h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: var(--muted);
+    }
+    .stat strong {
+      font-size: 34px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    input {
+      width: 100%;
+      padding: 13px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.18);
+      color: var(--text);
+    }
+    #updateMessage {
+      min-height: 22px;
+      margin-top: 12px;
+      color: #bbf7ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">UniCura Hospital Dashboard</div>
+      <div>
+        <a class="btn secondary" href="/index.html">Home</a>
+        <button class="btn secondary" id="logoutButton" type="button">Log Out</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1 id="hospitalTitle">Welcome</h1>
+      <p class="muted" id="hospitalMeta">Loading hospital profile...</p>
+    </section>
+
+    <section class="stats-grid" id="statsGrid">
+      <div class="stat">
+        <h3>Total Beds</h3>
+        <strong id="totalBedsValue">0</strong>
+      </div>
+      <div class="stat">
+        <h3>Available Beds</h3>
+        <strong id="availableBedsValue">0</strong>
+      </div>
+      <div class="stat">
+        <h3>ICU Beds</h3>
+        <strong id="availableIcuBedsValue">0</strong>
+      </div>
+      <div class="stat">
+        <h3>Oxygen Beds</h3>
+        <strong id="availableOxygenBedsValue">0</strong>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Update Bed Availability</h2>
+      <p class="muted">Keep your live bed counts updated so patients can see the latest availability.</p>
+      <form id="bedsForm">
+        <div class="form-grid">
+          <input id="availableBedsInput" type="number" min="0" placeholder="Available beds" required>
+          <input id="availableIcuBedsInput" type="number" min="0" placeholder="Available ICU beds" required>
+          <input id="availableOxygenBedsInput" type="number" min="0" placeholder="Available oxygen beds" required>
+        </div>
+        <button class="btn" style="margin-top: 16px;" type="submit">Update Bed Availability</button>
+      </form>
+      <div id="updateMessage"></div>
+    </section>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      const storedHospital = localStorage.getItem("unicuraHospital");
+      const hospitalTitle = document.getElementById("hospitalTitle");
+      const hospitalMeta = document.getElementById("hospitalMeta");
+      const logoutButton = document.getElementById("logoutButton");
+      const bedsForm = document.getElementById("bedsForm");
+      const updateMessage = document.getElementById("updateMessage");
+
+      if (!storedHospital) {
+        window.location.href = "/hospital-login.html";
+        return;
+      }
+
+      let hospital = JSON.parse(storedHospital);
+
+      logoutButton.addEventListener("click", function() {
+        localStorage.removeItem("unicuraHospitalAuth");
+        localStorage.removeItem("unicuraHospital");
+        window.location.href = "/hospital-login.html";
+      });
+
+      async function loadHospital() {
+        const response = await fetch(`/api/hospitals/dashboard?email=${encodeURIComponent(hospital.email)}`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Unable to load hospital profile.");
+        }
+
+        hospital = data.hospital;
+        localStorage.setItem("unicuraHospital", JSON.stringify(hospital));
+
+        hospitalTitle.textContent = `Welcome, ${hospital.name}`;
+        hospitalMeta.textContent = `${hospital.address}, ${hospital.city} | ${hospital.email}`;
+        document.getElementById("totalBedsValue").textContent = hospital.totalBeds || 0;
+        document.getElementById("availableBedsValue").textContent = hospital.availableBeds || 0;
+        document.getElementById("availableIcuBedsValue").textContent = hospital.availableIcuBeds || 0;
+        document.getElementById("availableOxygenBedsValue").textContent = hospital.availableOxygenBeds || 0;
+        document.getElementById("availableBedsInput").value = hospital.availableBeds || 0;
+        document.getElementById("availableIcuBedsInput").value = hospital.availableIcuBeds || 0;
+        document.getElementById("availableOxygenBedsInput").value = hospital.availableOxygenBeds || 0;
+      }
+
+      bedsForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        updateMessage.textContent = "";
+
+        try {
+          const response = await fetch("/api/hospitals/beds", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              hospitalId: hospital.id,
+              availableBeds: Number(document.getElementById("availableBedsInput").value),
+              availableIcuBeds: Number(document.getElementById("availableIcuBedsInput").value),
+              availableOxygenBeds: Number(document.getElementById("availableOxygenBedsInput").value)
+            })
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.message || "Unable to update bed availability.");
+          }
+
+          hospital = data.hospital;
+          localStorage.setItem("unicuraHospital", JSON.stringify(hospital));
+          updateMessage.textContent = data.message || "Bed availability updated successfully.";
+          await loadHospital();
+        } catch (error) {
+          updateMessage.textContent = error.message;
+        }
+      });
+
+      try {
+        await loadHospital();
+      } catch (error) {
+        updateMessage.textContent = error.message;
+      }
+    });
+  </script>
+<script src="/js/site-api.js" defer></script>
+</body>
+</html>

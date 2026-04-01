@@ -1,0 +1,17 @@
+[
+  {
+    "id": "0c3467e1-d841-4947-ac34-30fe7ad58518",
+    "emailHash": "07227904d2ee7e0d25ad04c20d74840aec7001b61a578dcaa3120a099d8e301f",
+    "emailEncrypted": {
+      "iv": "80bbff79cbc20706375a4ae2",
+      "tag": "e3d691e02ba6dece165dc83c05ee8d4b",
+      "value": "52e234a462642325b4c1ec13af9d80c4a892720a9171d1336c"
+    },
+    "sourcePageEncrypted": {
+      "iv": "5dde7814d5fd37c5a10a4329",
+      "tag": "478d95c96108e8b2f87628bac0e7b53a",
+      "value": "90043221e9215437235ce6"
+    },
+    "createdAt": "2026-03-26T16:30:45.103Z"
+  }
+]

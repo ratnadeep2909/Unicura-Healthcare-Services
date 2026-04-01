@@ -1,0 +1,201 @@
+/* ================= ABOUT SECTION ================= */
+
+.about-us {
+  display: block;
+  margin: auto;
+  width: 100%;
+  max-width: 52.5rem;
+  height: 100%;
+}
+
+.about-us-heading {
+  text-align: center;
+  font-size: 40px;
+  margin: 5rem 0;
+}
+
+.about-service {
+  width: 100%;
+  max-width: 1200px;
+  margin: -40px auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sec-1,
+.sec-2 {
+  width: 100%;
+  max-width: 600px;
+}
+
+.sec-2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.a-1,
+.a-2,
+.a-3 {
+  min-height: 94px;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  align-items: center;
+  background-color: #111;
+  border-radius: 11px;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.a-1:hover,
+.a-2:hover,
+.a-3:hover {
+  box-shadow: 0 8px 16px rgba(47, 80, 247, 0.2);
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.a-l,
+.b-l,
+.c-l {
+  height: 58px;
+  width: 58px;
+  border-radius: 50%;
+  margin: 17px 15px;
+  border: 2px solid #2f7f81;
+  flex-shrink: 0;
+}
+
+.a-r,
+.b-r,
+.c-r {
+  flex-grow: 1;
+  margin: 19px 20px;
+}
+
+.head-1 {
+  font-size: 18px;
+}
+
+.head-2 {
+  font-size: 10px;
+  margin-top: 7px;
+}
+
+.about-img {
+  max-height: 300px;
+  width: 100%;
+  max-width: 520px;
+  margin: 30px auto;
+  display: block;
+}
+
+/* ================= TEAM SECTION (FINAL FIX) ================= */
+
+.team {
+  background-color: #000;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.team-heading {
+  color: #fff;
+  font-size: 32px;
+  margin-bottom: 60px;
+}
+
+.team-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.team-card {
+  background-color: #e6e6e6;
+  width: 260px;
+  padding: 30px 20px;
+  border-radius: 16px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* 🔥 IMAGE VISIBILITY FIX */
+.team-card image {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 20px;
+  background-color: #ccc;
+}
+
+.team-card h3 {
+  font-size: 18px;
+  margin-bottom: 6px;
+  color: #000;
+}
+
+.team-card p {
+  font-size: 14px;
+  color: #555;
+}
+/* ========= TEAM NEW – NO CONFLICT GUARANTEE ========= */
+
+.team-new {
+  background-color: #000;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.team-new-heading {
+  color: #fff;
+  font-size: 32px;
+  margin-bottom: 60px;
+}
+
+.team-new-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.team-new-card {
+  background-color: #eaeaea;
+  width: 260px;
+  padding: 30px 20px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.team-new-card img {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 20px;
+  background-color: #ccc;
+}
+
+.team-new-card h3 {
+  color: #000;
+  margin-bottom: 6px;
+}
+
+.team-new-card p {
+  color: #555;
+  font-size: 14px;
+}

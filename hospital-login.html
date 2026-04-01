@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniCura Hospital Login</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.png">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, #143b54 0%, #07151c 62%);
+      color: #eff8fb;
+    }
+    .card {
+      width: min(92vw, 460px);
+      background: rgba(10, 34, 46, 0.96);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 26px 50px rgba(0,0,0,0.28);
+    }
+    h1 { margin-top: 0; margin-bottom: 10px; }
+    p { color: #bfd6df; }
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: #0a2430;
+      color: #eff8fb;
+      margin-bottom: 14px;
+      box-sizing: border-box;
+    }
+    button, a {
+      display: inline-block;
+      text-decoration: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button {
+      width: 100%;
+      background: #7fd8ff;
+      color: #042839;
+    }
+    .secondary {
+      margin-top: 14px;
+      color: #eff8fb;
+      border: 1px solid rgba(255,255,255,0.14);
+      text-align: center;
+      width: calc(100% - 2px);
+    }
+    .hint {
+      margin-top: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      color: #d0e8ef;
+      font-size: 14px;
+    }
+    #message { margin-top: 14px; min-height: 20px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Hospital Portal</h1>
+    <p>Sign in to update your hospital's available beds and emergency capacity.</p>
+    <form id="hospitalLoginForm">
+      <input id="hospitalEmail" type="email" placeholder="Hospital email" required>
+      <input id="hospitalPassword" type="password" placeholder="Password" required>
+      <button type="submit">Hospital Login</button>
+    </form>
+    <div id="message"></div>
+    <div class="hint">
+      Default seeded hospital password: <strong>Hospital123!</strong>
+    </div>
+    <a class="secondary" href="/index.html">Back to Home</a>
+  </div>
+
+  <script>
+    document.getElementById("hospitalLoginForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const message = document.getElementById("message");
+
+      try {
+        const response = await fetch("/api/hospitals/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: document.getElementById("hospitalEmail").value.trim(),
+            password: document.getElementById("hospitalPassword").value
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Hospital login failed.");
+        }
+
+        localStorage.setItem("unicuraHospitalAuth", data.token);
+        localStorage.setItem("unicuraHospital", JSON.stringify(data.hospital));
+        message.textContent = data.message;
+        setTimeout(() => {
+          window.location.href = "/hospital-dashboard.html";
+        }, 700);
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    });
+  </script>
+<script src="/js/site-api.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+[
+  {
+    "id": "9112934a-943c-4d38-92d5-cf458a22a0c1",
+    "emailHash": "29c0224933c2ed385ae744c91a9b0a9364ecde6adf5cda62bac8e7b3eae66264",
+    "nameEncrypted": {
+      "iv": "31cf81e957ca9425880b50f2",
+      "tag": "7dd030715869f9a3cc7f11fa112e6e46",
+      "value": "a42dde1a3cb90df615"
+    },
+    "emailEncrypted": {
+      "iv": "1b9b45012eb48ebe754d0fbd",
+      "tag": "8e37b75334034b0207495b7ebe6afb56",
+      "value": "2deda5543c5a322752192e3e63e1d29dc371b106fe95477ebddd"
+    },
+    "passwordHash": "ae38fa1d8dde0407fde1ff2d0195d10f0363f140e97771ef207bab23d4e009c3edeaf751592f6a2f9c63c8b98d520d47bfaf39a72cea4c46b5a6813f1f0a3390",
+    "passwordSalt": "e35d35971087e75e910b6b9584e36d26",
+    "createdAt": "2026-03-26T16:23:00.651Z"
+  }
+]

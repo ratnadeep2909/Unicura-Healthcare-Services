@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniCura Lab Login</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.png">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, #164438 0%, #081611 62%);
+      color: #eefaf5;
+    }
+    .card {
+      width: min(92vw, 460px);
+      background: rgba(10, 36, 29, 0.96);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 26px 50px rgba(0,0,0,0.28);
+    }
+    h1 { margin-top: 0; margin-bottom: 10px; }
+    p { color: #c3ded5; }
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: #0a241d;
+      color: #eefaf5;
+      margin-bottom: 14px;
+      box-sizing: border-box;
+    }
+    button, a {
+      display: inline-block;
+      text-decoration: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button {
+      width: 100%;
+      background: #74e0b8;
+      color: #073125;
+    }
+    .secondary {
+      margin-top: 14px;
+      color: #eefaf5;
+      border: 1px solid rgba(255,255,255,0.14);
+      text-align: center;
+      width: calc(100% - 2px);
+    }
+    .hint {
+      margin-top: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      color: #d7efe7;
+      font-size: 14px;
+    }
+    #message { margin-top: 14px; min-height: 20px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Test Lab Portal</h1>
+    <p>Sign in to update lab timings, test availability, and home collection support.</p>
+    <form id="labLoginForm">
+      <input id="labEmail" type="email" placeholder="Lab email" required>
+      <input id="labPassword" type="password" placeholder="Password" required>
+      <button type="submit">Lab Login</button>
+    </form>
+    <div id="message"></div>
+    <div class="hint">
+      Default seeded lab password: <strong>Lab123!</strong>
+    </div>
+    <a class="secondary" href="/index.html">Back to Home</a>
+  </div>
+
+  <script>
+    document.getElementById("labLoginForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const message = document.getElementById("message");
+
+      try {
+        const response = await fetch("/api/test-labs/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: document.getElementById("labEmail").value.trim(),
+            password: document.getElementById("labPassword").value
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Lab login failed.");
+        }
+
+        localStorage.setItem("unicuraLabAuth", data.token);
+        localStorage.setItem("unicuraLab", JSON.stringify(data.lab));
+        message.textContent = data.message;
+        setTimeout(() => {
+          window.location.href = "/lab-dashboard.html";
+        }, 700);
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    });
+  </script>
+<script src="/js/site-api.js" defer></script>
+</body>
+</html>
