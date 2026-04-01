@@ -15,7 +15,9 @@ function normalizeBaseUrl(value) {
   return value.endsWith("/") ? value : `${value}/`;
 }
 
-export default async function handler(request) {
+export const runtime = "nodejs";
+
+async function proxyRequest(request) {
   const backendBaseUrl = normalizeBaseUrl(process.env.RENDER_BACKEND_URL);
 
   if (!backendBaseUrl) {
@@ -45,8 +47,7 @@ export default async function handler(request) {
   };
 
   if (request.method !== "GET" && request.method !== "HEAD") {
-    init.body = request.body;
-    init.duplex = "half";
+    init.body = await request.arrayBuffer();
   }
 
   try {
@@ -56,7 +57,9 @@ export default async function handler(request) {
     responseHeaders.delete("content-length");
     responseHeaders.delete("transfer-encoding");
 
-    return new Response(upstreamResponse.body, {
+    const responseBody = request.method === "HEAD" ? null : await upstreamResponse.arrayBuffer();
+
+    return new Response(responseBody, {
       status: upstreamResponse.status,
       statusText: upstreamResponse.statusText,
       headers: responseHeaders
@@ -70,4 +73,32 @@ export default async function handler(request) {
       502
     );
   }
+}
+
+export async function GET(request) {
+  return proxyRequest(request);
+}
+
+export async function POST(request) {
+  return proxyRequest(request);
+}
+
+export async function PUT(request) {
+  return proxyRequest(request);
+}
+
+export async function PATCH(request) {
+  return proxyRequest(request);
+}
+
+export async function DELETE(request) {
+  return proxyRequest(request);
+}
+
+export async function OPTIONS(request) {
+  return proxyRequest(request);
+}
+
+export async function HEAD(request) {
+  return proxyRequest(request);
 }
