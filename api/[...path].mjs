@@ -15,61 +15,59 @@ function normalizeBaseUrl(value) {
   return value.endsWith("/") ? value : `${value}/`;
 }
 
-export default {
-  async fetch(request) {
-    const backendBaseUrl = normalizeBaseUrl(process.env.RENDER_BACKEND_URL);
+export default async function handler(request) {
+  const backendBaseUrl = normalizeBaseUrl(process.env.RENDER_BACKEND_URL);
 
-    if (!backendBaseUrl) {
-      return jsonResponse(
-        {
-          message: "RENDER_BACKEND_URL is not configured on Vercel."
-        },
-        500
-      );
-    }
-
-    const incomingUrl = new URL(request.url);
-    const upstreamUrl = new URL(
-      `${incomingUrl.pathname.replace(/^\/+/, "")}${incomingUrl.search}`,
-      backendBaseUrl
+  if (!backendBaseUrl) {
+    return jsonResponse(
+      {
+        message: "RENDER_BACKEND_URL is not configured on Vercel."
+      },
+      500
     );
-
-    const headers = new Headers(request.headers);
-    headers.set("x-forwarded-host", incomingUrl.host);
-    headers.set("x-forwarded-proto", incomingUrl.protocol.replace(":", ""));
-    headers.delete("host");
-
-    const init = {
-      method: request.method,
-      headers,
-      redirect: "manual"
-    };
-
-    if (request.method !== "GET" && request.method !== "HEAD") {
-      init.body = request.body;
-      init.duplex = "half";
-    }
-
-    try {
-      const upstreamResponse = await fetch(upstreamUrl, init);
-      const responseHeaders = new Headers(upstreamResponse.headers);
-
-      responseHeaders.delete("content-length");
-      responseHeaders.delete("transfer-encoding");
-
-      return new Response(upstreamResponse.body, {
-        status: upstreamResponse.status,
-        statusText: upstreamResponse.statusText,
-        headers: responseHeaders
-      });
-    } catch (error) {
-      return jsonResponse(
-        {
-          message: "Unable to reach the Render backend.",
-          details: error instanceof Error ? error.message : String(error)
-        },
-        502
-      );
-    }
   }
-};
+
+  const incomingUrl = new URL(request.url);
+  const upstreamUrl = new URL(
+    `${incomingUrl.pathname.replace(/^\/+/, "")}${incomingUrl.search}`,
+    backendBaseUrl
+  );
+
+  const headers = new Headers(request.headers);
+  headers.set("x-forwarded-host", incomingUrl.host);
+  headers.set("x-forwarded-proto", incomingUrl.protocol.replace(":", ""));
+  headers.delete("host");
+
+  const init = {
+    method: request.method,
+    headers,
+    redirect: "manual"
+  };
+
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    init.body = request.body;
+    init.duplex = "half";
+  }
+
+  try {
+    const upstreamResponse = await fetch(upstreamUrl, init);
+    const responseHeaders = new Headers(upstreamResponse.headers);
+
+    responseHeaders.delete("content-length");
+    responseHeaders.delete("transfer-encoding");
+
+    return new Response(upstreamResponse.body, {
+      status: upstreamResponse.status,
+      statusText: upstreamResponse.statusText,
+      headers: responseHeaders
+    });
+  } catch (error) {
+    return jsonResponse(
+      {
+        message: "Unable to reach the Render backend.",
+        details: error instanceof Error ? error.message : String(error)
+      },
+      502
+    );
+  }
+}
